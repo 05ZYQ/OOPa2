@@ -1,6 +1,6 @@
 /**
- * Employee class - Extends Person class, represents theme park employees
- * Contains employee-specific properties and methods
+ * Employee class - Inherits from Person class, represents theme park employees
+ * Contains employee-specific attributes and methods
  */
 public class Employee extends Person {
     // Employee-specific instance variables
@@ -49,7 +49,13 @@ public class Employee extends Person {
         isAvailable = available;
     }
 
-    // Employee-specific methods
+    // Implement abstract method
+    @Override
+    public String introduce() {
+        return "Hello, I'm " + getName() + ", a " + department + " employee. My ID is " + employeeId + ".";
+    }
+
+    // Employee-specific method
     public void operateRide(Ride ride) {
         if (isAvailable) {
             System.out.println("Employee " + getName() + " is operating ride: " + ride.getRideName());
@@ -61,11 +67,11 @@ public class Employee extends Person {
     @Override
     public String toString() {
         return "Employee{" +
-                "name='" + getName() + "'" +
+                "name='" + getName() + '\'' +
                 ", age=" + getAge() +
-                ", email='" + getEmail() + "'" +
-                ", employeeId='" + employeeId + "'" +
-                ", department='" + department + "'" +
+                ", email='" + getEmail() + '\'' +
+                ", employeeId='" + employeeId + '\'' +
+                ", department='" + department + '\'' +
                 ", isAvailable=" + isAvailable +
                 '}';
     }

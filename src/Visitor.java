@@ -1,6 +1,6 @@
 /**
- * Visitor class - Extends Person class, represents theme park visitors
- * Contains visitor-specific properties and methods
+ * Visitor class - Inherits from Person class, represents theme park visitors
+ * Contains visitor-specific attributes and methods
  */
 public class Visitor extends Person {
     // Visitor-specific instance variables
@@ -16,9 +16,9 @@ public class Visitor extends Person {
         this.hasRidePass = false;
     }
 
-    // Parameterized constructor
+    // Constructor with parameters
     public Visitor(String name, int age, String email, String visitorId, String ticketType) {
-        super(name, age, email); // Call parent class parameterized constructor
+        super(name, age, email); // Call parent class constructor with parameters
         this.visitorId = visitorId;
         this.ticketType = ticketType;
         this.hasRidePass = ticketType.equals("DayPass") || ticketType.equals("SeasonPass");
@@ -51,7 +51,13 @@ public class Visitor extends Person {
         this.hasRidePass = hasRidePass;
     }
 
-    // Visitor-specific methods
+    // Implement abstract method
+    @Override
+    public String introduce() {
+        return "Hi, I'm " + getName() + ", a visitor with " + ticketType + " ticket. My visitor ID is " + visitorId + ".";
+    }
+
+    // Visitor-specific method
     public void purchaseTicket(String ticketType) {
         this.ticketType = ticketType;
         this.hasRidePass = ticketType.equals("DayPass") || ticketType.equals("SeasonPass");
@@ -61,11 +67,11 @@ public class Visitor extends Person {
     @Override
     public String toString() {
         return "Visitor{" +
-                "name='" + getName() + "'" +
+                "name='" + getName() + '\'' +
                 ", age=" + getAge() +
-                ", email='" + getEmail() + "'" +
-                ", visitorId='" + visitorId + "'" +
-                ", ticketType='" + ticketType + "'" +
+                ", email='" + getEmail() + '\'' +
+                ", visitorId='" + visitorId + '\'' +
+                ", ticketType='" + ticketType + '\'' +
                 ", hasRidePass=" + hasRidePass +
                 '}';
     }

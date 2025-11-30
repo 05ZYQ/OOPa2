@@ -1,6 +1,7 @@
 /**
  * Person class - Abstract base class representing basic person information
- * Contains common properties for all personnel
+ * Contains common attributes for all persons
+ * Part 2: Changed to abstract class since it will never be instantiated
  */
 public abstract class Person {
     // Instance variables
@@ -50,6 +51,9 @@ public abstract class Person {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    // Abstract method - All persons should have a way to introduce themselves
+    public abstract String introduce();
 
     @Override
     public String toString() {
