@@ -1,53 +1,58 @@
 /**
- * Person class - an abstract base class representing basic personnel information
+ * Person class - Abstract base class representing basic person information
+ * Contains common properties for all personnel
  */
 public abstract class Person {
-    // instance variable
+    // Instance variables
     private String name;
     private int age;
-    private String gender;
-    
-    // Default constructor 
+    private String email;
+
+    // Default constructor
     public Person() {
         this.name = "Unknown";
         this.age = 0;
-        this.gender = "Unknown";
+        this.email = "unknown@example.com";
     }
-    
-    // Constructor with parameters
-    public Person(String name, int age, String gender) {
+
+    // Parameterized constructor
+    public Person(String name, int age, String email) {
         this.name = name;
         this.age = age;
-        this.gender = gender;
+        this.email = email;
     }
-    
+
     // Getter and Setter methods
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public int getAge() {
         return age;
     }
-    
+
     public void setAge(int age) {
-        this.age = age;
+        if (age >= 0) {
+            this.age = age;
+        } else {
+            System.out.println("Age cannot be negative");
+        }
     }
-    
-    public String getGender() {
-        return gender;
+
+    public String getEmail() {
+        return email;
     }
-    
-    public void setGender(String gender) {
-        this.gender = gender;
+
+    public void setEmail(String email) {
+        this.email = email;
     }
-    
+
     @Override
     public String toString() {
-        return "Person{name='" + name + "', age=" + age + ", gender='" + gender + "'}";
+        return "Person{name='" + name + "', age=" + age + ", email='" + email + "'}";
     }
 }

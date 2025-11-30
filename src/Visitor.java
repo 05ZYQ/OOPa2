@@ -1,50 +1,72 @@
 /**
- * Visitor class - extends Person, representing theme park visitor
+ * Visitor class - Extends Person class, represents theme park visitors
+ * Contains visitor-specific properties and methods
  */
 public class Visitor extends Person {
     // Visitor-specific instance variables
-    private String ticketNumber;
-    private boolean hasSeasonPass;
-    
+    private String visitorId;
+    private String ticketType; // "Single", "DayPass", "SeasonPass"
+    private boolean hasRidePass;
+
     // Default constructor
     public Visitor() {
         super(); // Call parent class default constructor
-        this.ticketNumber = "T0000";
-        this.hasSeasonPass = false;
+        this.visitorId = "V0000";
+        this.ticketType = "Single";
+        this.hasRidePass = false;
     }
-    
-    // Constructor with parameters
-    public Visitor(String name, int age, String gender, String ticketNumber, boolean hasSeasonPass) {
-        super(name, age, gender); // Call parent class constructor
-        this.ticketNumber = ticketNumber;
-        this.hasSeasonPass = hasSeasonPass;
+
+    // Parameterized constructor
+    public Visitor(String name, int age, String email, String visitorId, String ticketType) {
+        super(name, age, email); // Call parent class parameterized constructor
+        this.visitorId = visitorId;
+        this.ticketType = ticketType;
+        this.hasRidePass = ticketType.equals("DayPass") || ticketType.equals("SeasonPass");
     }
-    
+
     // Getter and Setter methods
-    public String getTicketNumber() {
-        return ticketNumber;
+    public String getVisitorId() {
+        return visitorId;
     }
-    
-    public void setTicketNumber(String ticketNumber) {
-        this.ticketNumber = ticketNumber;
+
+    public void setVisitorId(String visitorId) {
+        this.visitorId = visitorId;
     }
-    
-    public boolean hasSeasonPass() {
-        return hasSeasonPass;
+
+    public String getTicketType() {
+        return ticketType;
     }
-    
-    public void setHasSeasonPass(boolean hasSeasonPass) {
-        this.hasSeasonPass = hasSeasonPass;
+
+    public void setTicketType(String ticketType) {
+        this.ticketType = ticketType;
+        // Update ride pass status
+        this.hasRidePass = ticketType.equals("DayPass") || ticketType.equals("SeasonPass");
     }
-    
+
+    public boolean hasRidePass() {
+        return hasRidePass;
+    }
+
+    public void setHasRidePass(boolean hasRidePass) {
+        this.hasRidePass = hasRidePass;
+    }
+
+    // Visitor-specific methods
+    public void purchaseTicket(String ticketType) {
+        this.ticketType = ticketType;
+        this.hasRidePass = ticketType.equals("DayPass") || ticketType.equals("SeasonPass");
+        System.out.println("Visitor " + getName() + " purchased " + ticketType + " ticket");
+    }
+
     @Override
     public String toString() {
         return "Visitor{" +
-                "name='" + getName() + '\'' +
+                "name='" + getName() + "'" +
                 ", age=" + getAge() +
-                ", gender='" + getGender() + '\'' +
-                ", ticketNumber='" + ticketNumber + '\'' +
-                ", hasSeasonPass=" + hasSeasonPass +
+                ", email='" + getEmail() + "'" +
+                ", visitorId='" + visitorId + "'" +
+                ", ticketType='" + ticketType + "'" +
+                ", hasRidePass=" + hasRidePass +
                 '}';
     }
 }
