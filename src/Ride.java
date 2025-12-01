@@ -6,11 +6,13 @@ import java.util.Comparator;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 /**
  * Ride class - Represents amusement park ride
  * Implements RideInterface
- * Part 6: Add file export functionality
+ * Part 7: Add file import functionality
  */
 public class Ride implements RideInterface {
     // Instance variables
@@ -362,12 +364,7 @@ public class Ride implements RideInterface {
         System.out.println("Cycle count for " + rideName + " has been reset to 0");
     }
 
-    // Part 6: File export method
-    /**
-     * Export ride history to a CSV file
-     * @param filename The name of the file to create
-     * @return true if export was successful, false otherwise
-     */
+    // Part 6: File export methods
     public boolean exportRideHistory(String filename) {
         if (rideHistory.isEmpty()) {
             System.out.println("Error: No ride history to export for " + rideName);
@@ -414,21 +411,11 @@ public class Ride implements RideInterface {
         }
     }
 
-    /**
-     * Export ride history with a default filename
-     * @return true if export was successful, false otherwise
-     */
     public boolean exportRideHistory() {
         String filename = rideName.replaceAll("\\s+", "_") + "_history.csv";
         return exportRideHistory(filename);
     }
 
-    /**
-     * Export ride history with custom details
-     * @param filename The name of the file to create
-     * @param includeRideInfo Whether to include ride information in each record
-     * @return true if export was successful, false otherwise
-     */
     public boolean exportRideHistory(String filename, boolean includeRideInfo) {
         if (rideHistory.isEmpty()) {
             System.out.println("Error: No ride history to export for " + rideName);
@@ -487,6 +474,256 @@ public class Ride implements RideInterface {
             if (writer != null) {
                 writer.close();
             }
+        }
+    }
+
+    // Part 7: File import method
+    /**
+     * Import ride history from a CSV file
+     * @param filename The name of the file to read
+     * @return Number of visitors successfully imported, or -1 if error occurred
+     */
+    public int importRideHistory(String filename) {
+        BufferedReader reader = null;
+        int visitorsImported = 0;
+        int lineNumber = 0;
+
+        try {
+            reader = new BufferedReader(new FileReader(filename));
+            String line;
+
+            System.out.println("Starting import from file: " + filename);
+
+            // Read file line by line
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+
+                // Skip header line (line 1)
+                if (lineNumber == 1) {
+                    System.out.println("Found header: " + line);
+                    continue;
+                }
+
+                // Skip empty lines
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+
+                // Parse the CSV line
+                try {
+                    Visitor visitor = parseVisitorFromCSV(line);
+                    if (visitor != null) {
+                        // Add visitor to ride history
+                        if (addVisitorToHistoryWithoutMessage(visitor)) {
+                            visitorsImported++;
+                            System.out.println("  Line " + lineNumber + ": Successfully imported " + visitor.getName());
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("  Line " + lineNumber + ": Error - " + e.getMessage());
+                    System.out.println("    Line content: " + line);
+                }
+            }
+
+            System.out.println("Import completed: " + visitorsImported + " visitors imported from " + filename);
+            return visitorsImported;
+
+        } catch (IOException e) {
+            System.out.println("Error: Failed to read file: " + filename);
+            System.out.println("  Exception: " + e.getMessage());
+            return -1;
+        } finally {
+            // Always close the reader
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    System.out.println("Warning: Failed to close file reader");
+                }
+            }
+        }
+    }
+
+    /**
+     * Parse a Visitor object from a CSV line
+     * @param csvLine CSV line containing visitor data
+     * @return Visitor object, or null if parsing failed
+     * @throws IllegalArgumentException if CSV format is invalid
+     */
+    private Visitor parseVisitorFromCSV(String csvLine) throws IllegalArgumentException {
+        // Split the CSV line by comma
+        String[] parts = csvLine.split(",");
+
+        // Check for minimum required fields
+        if (parts.length < 8) {
+            throw new IllegalArgumentException("Invalid CSV format: expected 8 fields, found " + parts.length);
+        }
+
+        try {
+            // Extract fields from CSV (matching export format)
+            String rideName = parts[0].trim();
+            String visitorName = parts[1].trim();
+            String visitorId = parts[2].trim();
+            int age = Integer.parseInt(parts[3].trim());
+            String email = parts[4].trim();
+            String ticketType = parts[5].trim();
+            String rideType = parts[6].trim();
+            int minHeight = Integer.parseInt(parts[7].trim());
+
+            // Validate data
+            if (visitorName.isEmpty() || visitorId.isEmpty() || email.isEmpty()) {
+                throw new IllegalArgumentException("Required fields are empty");
+            }
+
+            if (age < 0 || age > 120) {
+                throw new IllegalArgumentException("Invalid age: " + age);
+            }
+
+            if (!ticketType.equals("Single") && !ticketType.equals("DayPass") && !ticketType.equals("SeasonPass")) {
+                throw new IllegalArgumentException("Invalid ticket type: " + ticketType);
+            }
+
+            // Create and return Visitor object
+            return new Visitor(visitorName, age, email, visitorId, ticketType);
+
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number format in CSV line");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error parsing visitor data: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Add visitor to history without printing success message (for import)
+     * @param visitor Visitor to add
+     * @return true if added successfully, false otherwise
+     */
+    private boolean addVisitorToHistoryWithoutMessage(Visitor visitor) {
+        if (visitor != null && !rideHistory.contains(visitor)) {
+            rideHistory.add(visitor);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Import ride history with flexible format (handles both with and without ride info)
+     * @param filename The name of the file to read
+     * @param hasRideInfo Whether the file includes ride information
+     * @return Number of visitors successfully imported, or -1 if error occurred
+     */
+    public int importRideHistory(String filename, boolean hasRideInfo) {
+        BufferedReader reader = null;
+        int visitorsImported = 0;
+        int lineNumber = 0;
+
+        try {
+            reader = new BufferedReader(new FileReader(filename));
+            String line;
+
+            System.out.println("Starting import from file: " + filename);
+            System.out.println("Ride information in file: " + (hasRideInfo ? "Yes" : "No"));
+
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+
+                // Skip header line
+                if (lineNumber == 1) {
+                    System.out.println("Found header: " + line);
+                    continue;
+                }
+
+                // Skip empty lines
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+
+                try {
+                    Visitor visitor;
+                    if (hasRideInfo) {
+                        // Parse with ride information
+                        visitor = parseVisitorFromCSVWithRideInfo(line);
+                    } else {
+                        // Parse without ride information
+                        visitor = parseVisitorFromCSVWithoutRideInfo(line);
+                    }
+
+                    if (visitor != null) {
+                        if (addVisitorToHistoryWithoutMessage(visitor)) {
+                            visitorsImported++;
+                            System.out.println("  Line " + lineNumber + ": Imported " + visitor.getName());
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("  Line " + lineNumber + ": Error - " + e.getMessage());
+                }
+            }
+
+            System.out.println("Import completed: " + visitorsImported + " visitors imported");
+            return visitorsImported;
+
+        } catch (IOException e) {
+            System.out.println("Error: Failed to read file: " + filename);
+            System.out.println("  Exception: " + e.getMessage());
+            return -1;
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    System.out.println("Warning: Failed to close file reader");
+                }
+            }
+        }
+    }
+
+    /**
+     * Parse visitor from CSV line with ride information
+     */
+    private Visitor parseVisitorFromCSVWithRideInfo(String csvLine) throws IllegalArgumentException {
+        String[] parts = csvLine.split(",");
+
+        if (parts.length < 8) {
+            throw new IllegalArgumentException("Invalid CSV format with ride info");
+        }
+
+        try {
+            // Format: Ride Name,Ride Type,Min Height,Visitor Name,Visitor ID,Age,Email,Ticket Type
+            String visitorName = parts[3].trim();
+            String visitorId = parts[4].trim();
+            int age = Integer.parseInt(parts[5].trim());
+            String email = parts[6].trim();
+            String ticketType = parts[7].trim();
+
+            return new Visitor(visitorName, age, email, visitorId, ticketType);
+
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number format");
+        }
+    }
+
+    /**
+     * Parse visitor from CSV line without ride information
+     */
+    private Visitor parseVisitorFromCSVWithoutRideInfo(String csvLine) throws IllegalArgumentException {
+        String[] parts = csvLine.split(",");
+
+        if (parts.length < 5) {
+            throw new IllegalArgumentException("Invalid CSV format without ride info");
+        }
+
+        try {
+            // Format: Visitor Name,Visitor ID,Age,Email,Ticket Type
+            String visitorName = parts[0].trim();
+            String visitorId = parts[1].trim();
+            int age = Integer.parseInt(parts[2].trim());
+            String email = parts[3].trim();
+            String ticketType = parts[4].trim();
+
+            return new Visitor(visitorName, age, email, visitorId, ticketType);
+
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number format");
         }
     }
 
