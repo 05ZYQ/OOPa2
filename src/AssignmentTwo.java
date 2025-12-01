@@ -1,7 +1,5 @@
-import java.io.File;
-
 /**
- * AssignmentTwo class - Main class containing all demonstration methods
+ * AssignmentTwo class - Main class containing main method and demonstration methods for all parts
  */
 public class AssignmentTwo {
 
@@ -13,6 +11,12 @@ public class AssignmentTwo {
 
         // Run Part 6 demonstration
         demonstratePartSix();
+
+        System.out.println("\n" + "=".repeat(50));
+
+        // Run specific partSix method
+        AssignmentTwo assignment = new AssignmentTwo();
+        assignment.partSix();
     }
 
     /**
@@ -21,42 +25,100 @@ public class AssignmentTwo {
     private static void demonstratePartSix() {
         System.out.println("\n=== Part 6: Writing to File ===");
 
-        // 1. Create new Ride object
-        Ride ride = new Ride("Space Mountain", "RollerCoaster", 135, 4);
-        System.out.println("Created new ride: " + ride.getRideName());
+        // 1. Create a new ride
+        System.out.println("\n1. Creating ride object:");
+        Ride ride = new Ride("Thunder Bolt", "RollerCoaster", 140, 4);
+        System.out.println("Created: " + ride);
 
-        // 2. Create and add at least 5 visitors to ride history
-        System.out.println("\n2. Adding visitors to ride history:");
-        Visitor v1 = new Visitor("Alex Johnson", 25, "alex@email.com", "V6001", "DayPass");
-        Visitor v2 = new Visitor("Maria Garcia", 30, "maria@email.com", "V6002", "SeasonPass");
-        Visitor v3 = new Visitor("David Smith", 22, "david@email.com", "V6003", "Single");
-        Visitor v4 = new Visitor("Sarah Wilson", 28, "sarah@email.com", "V6004", "DayPass");
-        Visitor v5 = new Visitor("James Brown", 35, "james@email.com", "V6005", "SeasonPass");
+        // 2. Create at least 5 visitors
+        System.out.println("\n2. Creating visitors for testing:");
+        Visitor visitor1 = new Visitor("Alice Johnson", 25, "alice@email.com", "V6001", "DayPass");
+        Visitor visitor2 = new Visitor("Bob Smith", 30, "bob@email.com", "V6002", "SeasonPass");
+        Visitor visitor3 = new Visitor("Carol Williams", 22, "carol@email.com", "V6003", "Single");
+        Visitor visitor4 = new Visitor("David Brown", 18, "david@email.com", "V6004", "DayPass");
+        Visitor visitor5 = new Visitor("Emma Davis", 28, "emma@email.com", "V6005", "SeasonPass");
+        Visitor visitor6 = new Visitor("Frank Miller", 35, "frank@email.com", "V6006", "Single"); // Extra visitor
 
-        ride.addVisitorToHistory(v1);
-        ride.addVisitorToHistory(v2);
-        ride.addVisitorToHistory(v3);
-        ride.addVisitorToHistory(v4);
-        ride.addVisitorToHistory(v5);
+        System.out.println("Created " + 6 + " visitors for testing");
 
-        // 3. Display current ride history
-        System.out.println("\n3. Current ride history:");
+        // 3. Add visitors to ride history (LinkedList)
+        System.out.println("\n3. Adding visitors to ride history:");
+        ride.addVisitorToHistory(visitor1);
+        ride.addVisitorToHistory(visitor2);
+        ride.addVisitorToHistory(visitor3);
+        ride.addVisitorToHistory(visitor4);
+        ride.addVisitorToHistory(visitor5);
+        ride.addVisitorToHistory(visitor6); // Extra visitor
+
+        // 4. Print ride history before export
+        System.out.println("\n4. Ride history before export:");
         ride.printRideHistory();
 
-        // 4. Export visitors to file
-        System.out.println("\n4. Exporting ride history to file:");
-        String filename = "ride_history.csv";
-        ride.exportRideHistory(filename);
+        // 5. Export ride history to file
+        System.out.println("\n5. Exporting ride history to file:");
+        String filename = "thunder_bolt_history.csv";
+        boolean success = ride.exportRideHistory(filename);
 
-        // 5. Verify file creation
-        System.out.println("\n5. Verifying file creation:");
-        File file = new File(filename);
-        if (file.exists()) {
-            System.out.println("Success: File " + filename + " created successfully");
-            System.out.println("  File size: " + file.length() + " bytes");
-            System.out.println("  File path: " + file.getAbsolutePath());
+        if (success) {
+            System.out.println("\nExport successful! Check the file: " + filename);
+            System.out.println("Expected file format (CSV):");
+            System.out.println("Ride Name,Visitor Name,Visitor ID,Age,Email,Ticket Type,Ride Type,Min Height");
+            System.out.println("Thunder Bolt,Alice Johnson,V6001,25,alice@email.com,DayPass,RollerCoaster,140");
+            System.out.println("... and so on for each visitor");
         } else {
-            System.out.println("Error: File " + filename + " was not created");
+            System.out.println("\nExport failed!");
+        }
+
+        // 6. Test with default filename
+        System.out.println("\n6. Testing export with default filename:");
+        Ride waterRide = new Ride("Splash Mountain", "WaterRide", 120, 6);
+
+        // Add some visitors
+        waterRide.addVisitorToHistory(new Visitor("Grace Taylor", 19, "grace@email.com", "V6007", "DayPass"));
+        waterRide.addVisitorToHistory(new Visitor("Henry Wilson", 32, "henry@email.com", "V6008", "SeasonPass"));
+        waterRide.addVisitorToHistory(new Visitor("Ivy Moore", 24, "ivy@email.com", "V6009", "Single"));
+
+        boolean defaultExportSuccess = waterRide.exportRideHistory();
+        if (defaultExportSuccess) {
+            System.out.println("Default filename export successful!");
+            System.out.println("File created: Splash_Mountain_history.csv");
+        }
+
+        // 7. Test custom export options
+        System.out.println("\n7. Testing custom export options:");
+        Ride ferrisWheel = new Ride("Sky Wheel", "FamilyRide", 100, 8);
+
+        // Add visitors
+        ferrisWheel.addVisitorToHistory(new Visitor("Jack Lee", 15, "jack@email.com", "V6010", "DayPass"));
+        ferrisWheel.addVisitorToHistory(new Visitor("Karen Chen", 29, "karen@email.com", "V6011", "SeasonPass"));
+
+        // Export without ride information
+        System.out.println("\n7.1 Exporting without ride information:");
+        boolean customExport1 = ferrisWheel.exportRideHistory("sky_wheel_visitors_only.csv", false);
+
+        // Export with ride information
+        System.out.println("\n7.2 Exporting with ride information:");
+        boolean customExport2 = ferrisWheel.exportRideHistory("sky_wheel_full.csv", true);
+
+        // 8. Test error cases
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("TESTING ERROR CASES");
+        System.out.println("=".repeat(50));
+
+        // 8.1 Test export with empty history
+        System.out.println("\n8.1 Testing export with empty ride history:");
+        Ride emptyRide = new Ride("Empty Ride", "Test", 100, 2);
+        emptyRide.exportRideHistory("empty_history.csv");
+
+        // 8.2 Test export to invalid directory
+        System.out.println("\n8.2 Testing export to invalid directory:");
+        Ride testRide = new Ride("Test Ride", "Test", 100, 2);
+        testRide.addVisitorToHistory(new Visitor("Test Visitor", 20, "test@email.com", "V9999", "Single"));
+
+        // Try to write to a non-existent directory
+        boolean invalidDirExport = testRide.exportRideHistory("/nonexistent/directory/test.csv");
+        if (!invalidDirExport) {
+            System.out.println("Expected error occurred - directory does not exist");
         }
 
         System.out.println("\n=== Part 6 Demonstration Completed ===");
@@ -68,27 +130,55 @@ public class AssignmentTwo {
     public void partSix() {
         System.out.println("\n=== Executing Part Six Method ===");
 
-        // 1. Create new Ride
-        Ride ride = new Ride("Adventure Ride", "MotionRide", 110, 5);
+        // 1. Create a new Ride
+        Ride ride = new Ride("Dragon Coaster", "RollerCoaster", 130, 3);
         System.out.println("Created new ride: " + ride.getRideName());
 
-        // 2. Add at least 5 Visitors to ride history
-        System.out.println("\n2. Adding visitors to ride history:");
-        Visitor[] visitors = new Visitor[5];
-        visitors[0] = new Visitor("John Doe", 20, "john@email.com", "V7001", "DayPass");
-        visitors[1] = new Visitor("Jane Smith", 25, "jane@email.com", "V7002", "SeasonPass");
-        visitors[2] = new Visitor("Mike Jones", 18, "mike@email.com", "V7003", "Single");
-        visitors[3] = new Visitor("Lisa Wang", 22, "lisa@email.com", "V7004", "DayPass");
-        visitors[4] = new Visitor("Tom Chen", 30, "tom@email.com", "V7005", "SeasonPass");
+        // 2. Create at least 5 Visitor objects
+        System.out.println("\n2. Creating 5+ visitors:");
+        Visitor v1 = new Visitor("John Rider", 20, "john@email.com", "V7001", "DayPass");
+        Visitor v2 = new Visitor("Maria Explorer", 25, "maria@email.com", "V7002", "SeasonPass");
+        Visitor v3 = new Visitor("Tom Adventurer", 18, "tom@email.com", "V7003", "Single");
+        Visitor v4 = new Visitor("Lisa Traveler", 22, "lisa@email.com", "V7004", "DayPass");
+        Visitor v5 = new Visitor("Mike Voyager", 30, "mike@email.com", "V7005", "SeasonPass");
+        Visitor v6 = new Visitor("Sarah Journey", 16, "sarah@email.com", "V7006", "Single"); // Extra visitor
 
-        for (Visitor visitor : visitors) {
-            ride.addVisitorToHistory(visitor);
+        System.out.println("Created " + 6 + " visitors");
+
+        // 3. Add visitors to ride history (LinkedList)
+        System.out.println("\n3. Adding visitors to ride history:");
+        ride.addVisitorToHistory(v1);
+        ride.addVisitorToHistory(v2);
+        ride.addVisitorToHistory(v3);
+        ride.addVisitorToHistory(v4);
+        ride.addVisitorToHistory(v5);
+        ride.addVisitorToHistory(v6); // Extra visitor
+
+        // 4. Export visitors to a file
+        System.out.println("\n4. Exporting ride history to file:");
+        String filename = "dragon_coaster_history.csv";
+
+        System.out.println("Attempting to export to file: " + filename);
+        boolean exportSuccess = ride.exportRideHistory(filename);
+
+        if (exportSuccess) {
+            System.out.println("Export successful!");
+            System.out.println("File created: " + filename);
+            System.out.println("Total visitors exported: " + ride.numberOfVisitors());
+
+            // Show expected file content
+            System.out.println("\nExpected file content (first few lines):");
+            System.out.println("Ride Name,Visitor Name,Visitor ID,Age,Email,Ticket Type,Ride Type,Min Height");
+            System.out.println("Dragon Coaster,John Rider,V7001,20,john@email.com,DayPass,RollerCoaster,130");
+            System.out.println("Dragon Coaster,Maria Explorer,V7002,25,maria@email.com,SeasonPass,RollerCoaster,130");
+            System.out.println("... (and more)");
+        } else {
+            System.out.println("Export failed!");
         }
 
-        // 3. Export visitors to file
-        System.out.println("\n3. Exporting ride history to file:");
-        String filename = "part6_ride_history.csv";
-        ride.exportRideHistory(filename);
+        // 5. Verify the data that was exported
+        System.out.println("\n5. Verifying exported data:");
+        ride.printRideHistory();
 
         System.out.println("\n=== Part Six Method Completed ===");
     }
@@ -98,15 +188,15 @@ public class AssignmentTwo {
      */
     public void partThree() {
         System.out.println("Part 3: Queue management for waiting visitors");
-        // Already implemented
+        // Already implemented in previous parts
     }
 
     /**
-     * Part 4A: Ride history demonstration method
+     * Part 4A: Ride history with LinkedList demonstration method
      */
     public void partFourA() {
         System.out.println("Part 4A: Ride history with LinkedList");
-        // Already implemented
+        // Already implemented in previous parts
     }
 
     /**
@@ -114,7 +204,7 @@ public class AssignmentTwo {
      */
     public void partFourB() {
         System.out.println("Part 4B: Sorting ride history");
-        // Already implemented
+        // Already implemented in previous parts
     }
 
     /**
@@ -122,7 +212,7 @@ public class AssignmentTwo {
      */
     public void partFive() {
         System.out.println("Part 5: Running ride cycles");
-        // Already implemented
+        // Already implemented in previous parts
     }
 
     /**
@@ -131,6 +221,6 @@ public class AssignmentTwo {
      */
     public void partSeven() {
         System.out.println("Part 7: Reading ride history from file");
-        // To be implemented
+        // To be implemented in next part
     }
 }
