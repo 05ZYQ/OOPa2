@@ -1,6 +1,7 @@
+import java.util.Comparator;
+
 /**
  * AssignmentTwo class - Main class containing main method and demonstration methods for each part
- * Main entry point for the theme park management system
  */
 public class AssignmentTwo {
     
@@ -10,25 +11,32 @@ public class AssignmentTwo {
     public static void main(String[] args) {
         System.out.println("=== Park Rides Visitor Management System (PRVMS) ===");
         
-        // Demonstrate Part 3 functionality
-        demonstratePartThree();
+        // Run Part 4 demonstration
+        demonstratePartFour();
+        
+        System.out.println("\n" + "=".repeat(50));
+        
+        // Run specific partFourA and partFourB methods
+        AssignmentTwo assignment = new AssignmentTwo();
+        assignment.partFourA();
+        assignment.partFourB();
     }
     
     /**
-     * Demonstrate waiting line management functionality for Part 3
+     * Demonstrates Part 4's history management and sorting functionality
      */
-    private static void demonstratePartThree() {
-        System.out.println("\n=== Part 3: Waiting Line Management with Queue ===");
+    private static void demonstratePartFour() {
+        System.out.println("\n=== Part 4: Ride History Management and Sorting ===");
         
         // Create visitors for testing
         System.out.println("\n1. Creating visitors for testing:");
         Visitor visitor1 = new Visitor("Alice Brown", 25, "alice@email.com", "V2001", "DayPass");
         Visitor visitor2 = new Visitor("Bob Wilson", 12, "bob@email.com", "V2002", "Single");
         Visitor visitor3 = new Visitor("Carol Davis", 30, "carol@email.com", "V2003", "SeasonPass");
-        Visitor visitor4 = new Visitor("David Lee", 8, "david@email.com", "V2004", "Single"); // Too young
-        Visitor visitor5 = new Visitor("Emma Garcia", 28, "emma@email.com", "V2005", "DayPass");
-        Visitor visitor6 = new Visitor("Frank Miller", 35, "frank@email.com", "V2006", "SeasonPass");
-        Visitor visitor7 = new Visitor("Grace Taylor", 15, "grace@email.com", "V2007", "Single");
+        Visitor visitor4 = new Visitor("David Lee", 18, "david@email.com", "V2004", "DayPass");
+        Visitor visitor5 = new Visitor("Emma Garcia", 28, "emma@email.com", "V2005", "SeasonPass");
+        Visitor visitor6 = new Visitor("Frank Miller", 35, "frank@email.com", "V2006", "Single");
+        Visitor visitor7 = new Visitor("Grace Taylor", 15, "grace@email.com", "V2007", "DayPass");
         
         System.out.println("Created " + 7 + " visitors for testing");
         
@@ -37,149 +45,191 @@ public class AssignmentTwo {
         Ride rollerCoaster = new Ride("Thunder Bolt", "RollerCoaster", 140);
         System.out.println("Created: " + rollerCoaster);
         
-        // 3. Add visitors to queue
-        System.out.println("\n3. Adding visitors to queue:");
-        System.out.println("3.1 Adding eligible visitors:");
-        rollerCoaster.addVisitorToQueue(visitor1); // Eligible
-        rollerCoaster.addVisitorToQueue(visitor2); // Eligible
-        rollerCoaster.addVisitorToQueue(visitor3); // Eligible
-        rollerCoaster.addVisitorToQueue(visitor5); // Eligible
-        rollerCoaster.addVisitorToQueue(visitor6); // Eligible
+        // Part 4A demonstration
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("PART 4A: RIDE HISTORY WITH LINKEDLIST");
+        System.out.println("=".repeat(60));
         
-        System.out.println("\n3.2 Testing ineligible visitor:");
-        rollerCoaster.addVisitorToQueue(visitor4); // Ineligible - Too young
+        // 3. Add visitors to ride history
+        System.out.println("\n3. Adding visitors to ride history:");
+        rollerCoaster.addVisitorToHistory(visitor1);
+        rollerCoaster.addVisitorToHistory(visitor2);
+        rollerCoaster.addVisitorToHistory(visitor3);
+        rollerCoaster.addVisitorToHistory(visitor4);
+        rollerCoaster.addVisitorToHistory(visitor5);
         
-        System.out.println("\n3.3 Adding more visitors to reach minimum 5:");
-        rollerCoaster.addVisitorToQueue(visitor7); // Eligible
+        // 4. Check if visitors are in history
+        System.out.println("\n4. Checking visitors in history:");
+        rollerCoaster.checkVisitorFromHistory(visitor3); // Should exist
+        rollerCoaster.checkVisitorFromHistory(visitor6); // Should not exist
         
-        // 4. Print current queue status
-        System.out.println("\n4. Current queue status:");
-        rollerCoaster.printQueue();
+        // 5. Print number of visitors
+        System.out.println("\n5. Number of visitors in history:");
+        rollerCoaster.numberOfVisitors();
         
-        // 5. Remove visitors from queue
-        System.out.println("\n5. Removing visitors from queue:");
-        System.out.println("5.1 First removal:");
-        rollerCoaster.removeVisitorFromQueue(); // Remove first (Alice)
+        // 6. Print ride history (using Iterator)
+        System.out.println("\n6. Printing ride history (using Iterator):");
+        rollerCoaster.printRideHistory();
         
-        System.out.println("\n5.2 Second removal:");
-        rollerCoaster.removeVisitorFromQueue(); // Remove second (Bob)
+        // Part 4B demonstration
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("PART 4B: SORTING RIDE HISTORY");
+        System.out.println("=".repeat(60));
         
-        // 6. Print queue status after removals
-        System.out.println("\n6. Queue status after removals:");
-        rollerCoaster.printQueue();
+        // 7. Create new ride for sorting demonstration
+        System.out.println("\n7. Creating new ride for sorting demonstration:");
+        Ride waterRide = new Ride("Splash Mountain", "WaterRide", 120);
         
-        // 7. Test FIFO behavior of queue
-        System.out.println("\n7. Demonstrating FIFO (First-In-First-Out) behavior:");
-        System.out.println("Current queue order:");
-        rollerCoaster.printQueue();
+        // Add visitors with varied data for sorting
+        System.out.println("\n8. Adding visitors with varied data for sorting:");
+        waterRide.addVisitorToHistory(new Visitor("Zoe Adams", 22, "zoe@email.com", "V3001", "Single"));
+        waterRide.addVisitorToHistory(new Visitor("Charlie Brown", 35, "charlie@email.com", "V3002", "SeasonPass"));
+        waterRide.addVisitorToHistory(new Visitor("Alice Cooper", 18, "alice@email.com", "V3003", "DayPass"));
+        waterRide.addVisitorToHistory(new Visitor("Bob Marley", 28, "bob@email.com", "V3004", "Single"));
+        waterRide.addVisitorToHistory(new Visitor("David Bowie", 45, "david@email.com", "V3005", "SeasonPass"));
         
-        System.out.println("\nRemoving next visitor (should be Carol - the next in line):");
-        Visitor nextInLine = rollerCoaster.peekQueue();
-        if (nextInLine != null) {
-            System.out.println("Next in line: " + nextInLine.getName());
-        }
-        rollerCoaster.removeVisitorFromQueue();
+        // 9. Demonstrate sorting by name
+        System.out.println("\n9.1 Sorting by name:");
+        System.out.println("Before sorting:");
+        waterRide.printRideHistory();
         
-        System.out.println("\nQueue after removing Carol:");
-        rollerCoaster.printQueue();
+        waterRide.sortHistoryByName();
+        System.out.println("After sorting by name:");
+        waterRide.printRideHistory();
         
-        // 8. Test helper methods
-        System.out.println("\n8. Testing helper methods:");
-        System.out.println("Queue size: " + rollerCoaster.getQueueSize());
-        System.out.println("Is queue empty: " + rollerCoaster.isQueueEmpty());
+        // 10. Demonstrate sorting by age
+        System.out.println("\n9.2 Sorting by age:");
+        // Reset order
+        waterRide.getRideHistory().clear();
+        waterRide.addVisitorToHistory(new Visitor("Zoe Adams", 22, "zoe@email.com", "V3001", "Single"));
+        waterRide.addVisitorToHistory(new Visitor("Charlie Brown", 35, "charlie@email.com", "V3002", "SeasonPass"));
+        waterRide.addVisitorToHistory(new Visitor("Alice Cooper", 18, "alice@email.com", "V3003", "DayPass"));
+        waterRide.addVisitorToHistory(new Visitor("Bob Marley", 28, "bob@email.com", "V3004", "Single"));
+        waterRide.addVisitorToHistory(new Visitor("David Bowie", 45, "david@email.com", "V3005", "SeasonPass"));
         
-        Visitor headVisitor = rollerCoaster.peekQueue();
-        if (headVisitor != null) {
-            System.out.println("Visitor at head of queue: " + headVisitor.getName());
-        }
+        System.out.println("Before sorting:");
+        waterRide.printRideHistory();
         
-        // 9. Test edge cases
-        System.out.println("\n9. Testing edge cases:");
-        System.out.println("9.1 Removing from empty queue:");
-        Ride emptyRide = new Ride("Test Ride", "Test", 100);
-        emptyRide.removeVisitorFromQueue();
+        waterRide.sortHistoryByAge();
+        System.out.println("After sorting by age:");
+        waterRide.printRideHistory();
         
-        System.out.println("\n9.2 Adding null visitor:");
-        emptyRide.addVisitorToQueue(null);
+        // 11. Demonstrate sorting by ticket type
+        System.out.println("\n9.3 Sorting by ticket type:");
+        // Reset order
+        waterRide.getRideHistory().clear();
+        waterRide.addVisitorToHistory(new Visitor("Zoe Adams", 22, "zoe@email.com", "V3001", "Single"));
+        waterRide.addVisitorToHistory(new Visitor("Charlie Brown", 35, "charlie@email.com", "V3002", "SeasonPass"));
+        waterRide.addVisitorToHistory(new Visitor("Alice Cooper", 18, "alice@email.com", "V3003", "DayPass"));
+        waterRide.addVisitorToHistory(new Visitor("Bob Marley", 28, "bob@email.com", "V3004", "Single"));
+        waterRide.addVisitorToHistory(new Visitor("David Bowie", 45, "david@email.com", "V3005", "SeasonPass"));
         
-        System.out.println("\n9.3 Printing empty queue:");
-        emptyRide.printQueue();
+        System.out.println("Before sorting:");
+        waterRide.printRideHistory();
         
-        System.out.println("\n=== Part 3 Demonstration Completed ===");
-        System.out.println("✓ Successfully demonstrated Queue operations:");
-        System.out.println("  - Added visitors to queue with eligibility checks");
-        System.out.println("  - Removed visitors from queue (FIFO behavior)");
-        System.out.println("  - Printed queue contents in order");
-        System.out.println("  - Tested edge cases and error handling");
+        waterRide.sortHistoryByTicketType();
+        System.out.println("After sorting by ticket type:");
+        waterRide.printRideHistory();
+        
+        System.out.println("\n=== Part 4 Demonstration Completed ===");
     }
     
     /**
-     * Part 3 method - Specific demonstration as required
+     * Part 4A method - Specific demonstration as required
      */
-    public void partThree() {
-        System.out.println("\n=== Executing Part Three Method ===");
+    public void partFourA() {
+        System.out.println("\n=== Executing Part FourA Method ===");
         
         // Create new Ride object
         Ride ride = new Ride("Dragon Coaster", "RollerCoaster", 130);
         System.out.println("Created new ride: " + ride.getRideName());
         
         // Create at least 5 Visitor objects
-        Visitor v1 = new Visitor("John Smith", 20, "john@email.com", "V3001", "DayPass");
-        Visitor v2 = new Visitor("Maria Rodriguez", 25, "maria@email.com", "V3002", "SeasonPass");
-        Visitor v3 = new Visitor("Tom Johnson", 18, "tom@email.com", "V3003", "Single");
-        Visitor v4 = new Visitor("Lisa Wang", 22, "lisa@email.com", "V3004", "DayPass");
-        Visitor v5 = new Visitor("Mike Chen", 30, "mike@email.com", "V3005", "SeasonPass");
-        Visitor v6 = new Visitor("Sarah Kim", 16, "sarah@email.com", "V3006", "Single"); // One extra for removal test
+        Visitor v1 = new Visitor("John Smith", 20, "john@email.com", "V4001", "DayPass");
+        Visitor v2 = new Visitor("Maria Rodriguez", 25, "maria@email.com", "V4002", "SeasonPass");
+        Visitor v3 = new Visitor("Tom Johnson", 18, "tom@email.com", "V4003", "Single");
+        Visitor v4 = new Visitor("Lisa Wang", 22, "lisa@email.com", "V4004", "DayPass");
+        Visitor v5 = new Visitor("Mike Chen", 30, "mike@email.com", "V4005", "SeasonPass");
         
-        // Add at least 5 Visitors to Queue
-        System.out.println("\nAdding visitors to queue:");
-        ride.addVisitorToQueue(v1);
-        ride.addVisitorToQueue(v2);
-        ride.addVisitorToQueue(v3);
-        ride.addVisitorToQueue(v4);
-        ride.addVisitorToQueue(v5);
-        ride.addVisitorToQueue(v6); // Add one more
+        // Add at least 5 Visitors to history
+        System.out.println("\nAdding visitors to ride history:");
+        ride.addVisitorToHistory(v1);
+        ride.addVisitorToHistory(v2);
+        ride.addVisitorToHistory(v3);
+        ride.addVisitorToHistory(v4);
+        ride.addVisitorToHistory(v5);
         
-        // Print all Visitors in Queue
-        System.out.println("\nPrinting queue after adding visitors:");
-        ride.printQueue();
+        // Check if a Visitor is in the collection
+        System.out.println("\nChecking if visitor is in history:");
+        ride.checkVisitorFromHistory(v3); // Should exist
+        ride.checkVisitorFromHistory(new Visitor("Unknown", 0, "unknown", "V9999", "Single")); // Should not exist
         
-        // Remove one Visitor from Queue
-        System.out.println("\nRemoving one visitor from queue:");
-        ride.removeVisitorFromQueue();
+        // Print number of Visitors in the collection
+        System.out.println("\nNumber of visitors in history:");
+        ride.numberOfVisitors();
         
-        // Print all Visitors in Queue again
-        System.out.println("\nPrinting queue after removal:");
-        ride.printQueue();
+        // Print all Visitors in the collection (using Iterator)
+        System.out.println("\nPrinting all visitors in history (using Iterator):");
+        ride.printRideHistory();
         
-        System.out.println("\n=== Part Three Method Completed ===");
+        System.out.println("\n=== Part FourA Method Completed ===");
     }
     
     /**
-     * Part 4A: Ride history demonstration method
-     * To be implemented in Part 4A
-     */
-    public void partFourA() {
-        System.out.println("Part 4A: Ride history with LinkedList");
-        // To be implemented in later part
-    }
-    
-    /**
-     * Part 4B: History sorting demonstration method
-     * To be implemented in Part 4B
+     * Part 4B method - Specific demonstration as required
      */
     public void partFourB() {
-        System.out.println("Part 4B: Sorting ride history");
-        // To be implemented in later part
+        System.out.println("\n=== Executing Part FourB Method ===");
+        
+        // Create new Ride object
+        Ride ride = new Ride("Space Adventure", "MotionRide", 110);
+        System.out.println("Created new ride: " + ride.getRideName());
+        
+        // Create at least 5 Visitor objects (with different data for sorting)
+        Visitor v1 = new Visitor("Charlie Brown", 15, "charlie@email.com", "V5001", "Single");
+        Visitor v2 = new Visitor("Alice Smith", 28, "alice@email.com", "V5002", "SeasonPass");
+        Visitor v3 = new Visitor("Bob Wilson", 22, "bob@email.com", "V5003", "DayPass");
+        Visitor v4 = new Visitor("Diana Prince", 35, "diana@email.com", "V5004", "SeasonPass");
+        Visitor v5 = new Visitor("Eve Johnson", 19, "eve@email.com", "V5005", "Single");
+        
+        // Add at least 5 Visitors to collection
+        System.out.println("\nAdding visitors to ride history:");
+        ride.addVisitorToHistory(v1);
+        ride.addVisitorToHistory(v2);
+        ride.addVisitorToHistory(v3);
+        ride.addVisitorToHistory(v4);
+        ride.addVisitorToHistory(v5);
+        
+        // Print all Visitors in the collection (before sorting)
+        System.out.println("\nBefore sorting:");
+        ride.printRideHistory();
+        
+        // Sort the collection (using Comparator)
+        System.out.println("\nSorting ride history by name...");
+        ride.sortHistoryByName();
+        
+        // Print all Visitors in the collection again to show sorting
+        System.out.println("\nAfter sorting by name:");
+        ride.printRideHistory();
+        
+        System.out.println("\n=== Part FourB Method Completed ===");
     }
     
     /**
-     * Part 5: Ride cycle operation demonstration method
+     * Part 3: Queue management demonstration method
+     */
+    public void partThree() {
+        System.out.println("Part 3: Queue management for waiting visitors");
+        // Already implemented previously
+    }
+    
+    /**
+     * Part 5: Ride cycle execution demonstration method
      * To be implemented in Part 5
      */
     public void partFive() {
         System.out.println("Part 5: Running ride cycles");
-        // To be implemented in later part
+        // To be implemented in future part
     }
     
     /**
@@ -188,7 +238,7 @@ public class AssignmentTwo {
      */
     public void partSix() {
         System.out.println("Part 6: Writing ride history to file");
-        // To be implemented in later part
+        // To be implemented in future part
     }
     
     /**
@@ -197,40 +247,6 @@ public class AssignmentTwo {
      */
     public void partSeven() {
         System.out.println("Part 7: Reading ride history from file");
-        // To be implemented in later part
-    }
-    
-    /**
-     * Method to test all parts
-     */
-    public static void testAllParts() {
-        AssignmentTwo assignment = new AssignmentTwo();
-        
-        System.out.println("=== Testing All Parts ===");
-        
-        // Test Part 3
-        System.out.println("\n--- Testing Part 3 ---");
-        assignment.partThree();
-        
-        // Later parts will be implemented in respective Parts
-        System.out.println("\n--- Other Parts (To be implemented) ---");
-        assignment.partFourA();
-        assignment.partFourB();
-        assignment.partFive();
-        assignment.partSix();
-        assignment.partSeven();
-    }
-    
-    public static void main(String[] args) {
-        System.out.println("=== Park Rides Visitor Management System (PRVMS) ===");
-        
-        // Run Part 3 demonstration
-        demonstratePartThree();
-        
-        System.out.println("\n" + "=".repeat(50));
-        
-        // Run specific partThree method
-        AssignmentTwo assignment = new AssignmentTwo();
-        assignment.partThree();
+        // To be implemented in future part
     }
 }

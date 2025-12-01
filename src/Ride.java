@@ -1,32 +1,35 @@
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Iterator;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
- * Ride class - Represents a ride in the theme park
+ * Ride class - Represents amusement rides in the theme park
  * Implements RideInterface
- * Part 3: Enhance queue management functionality
+ * Part 4: Enhanced history management and sorting functionality
  */
 public class Ride implements RideInterface {
     // Instance variables
     private String rideName;
-    private String rideType; // "RollerCoaster", "WaterRide", "FamilyRide", etc.
-    private int minHeight; // Minimum height requirement (cm)
-    private Employee operator; // Employee responsible for operating this ride
+    private String rideType;
+    private int minHeight;
+    private Employee operator;
     
-    // Part 3: Waiting queue - Using LinkedList to implement Queue interface
+    // Part 3: Waiting queue
     private Queue<Visitor> waitingQueue;
     
-    // Collection to be used in Part 4 (declared now, to be implemented later)
+    // Part 4: Ride history - Using LinkedList
     private LinkedList<Visitor> rideHistory;
 
     // Default constructor
     public Ride() {
         this.rideName = "Unknown Ride";
         this.rideType = "General";
-        this.minHeight = 120; // Default minimum height 120cm
-        this.operator = null; // No operator initially
-        this.waitingQueue = new LinkedList<>(); // Initialize waiting queue
-        this.rideHistory = new LinkedList<>(); // Initialize ride history
+        this.minHeight = 120;
+        this.operator = null;
+        this.waitingQueue = new LinkedList<>();
+        this.rideHistory = new LinkedList<>();
     }
 
     // Parameterized constructor
@@ -75,40 +78,36 @@ public class Ride implements RideInterface {
     public void setOperator(Employee operator) {
         this.operator = operator;
         if (operator != null) {
-            operator.setAvailable(false); // Employee unavailable after assignment
+            operator.setAvailable(false);
             System.out.println("Employee " + operator.getName() + " assigned to operate " + rideName);
         }
     }
 
-    // Get waiting queue (for testing)
     public Queue<Visitor> getWaitingQueue() {
         return waitingQueue;
     }
 
-    // Get ride history (for testing)
     public LinkedList<Visitor> getRideHistory() {
         return rideHistory;
     }
 
-    // Check if the ride is operational (has an operator)
     public boolean isOperational() {
         return operator != null && !operator.isAvailable();
     }
 
-    // Check if visitor meets ride requirements
     public boolean canVisitorRide(Visitor visitor) {
         if (visitor == null) {
             System.out.println("✗ Failure: Cannot check null visitor");
             return false;
         }
         
-        boolean canRide = visitor.hasRidePass() && visitor.getAge() >= 10; // Simple check: has ride pass and age >= 10
+        boolean canRide = visitor.hasRidePass() && visitor.getAge() >= 10;
         System.out.println("Checking if " + visitor.getName() + " can ride " + rideName + ": " + 
                           (canRide ? "✓ Eligible" : "✗ Not eligible"));
         return canRide;
     }
 
-    // ========== RideInterface method implementations ==========
+    // ========== RideInterface implementation ==========
 
     @Override
     public void addVisitorToQueue(Visitor visitor) {
@@ -116,7 +115,6 @@ public class Ride implements RideInterface {
             if (canVisitorRide(visitor)) {
                 waitingQueue.add(visitor);
                 System.out.println("✓ Success: Visitor " + visitor.getName() + " added to waiting queue for " + rideName);
-                System.out.println("  Current queue position: " + waitingQueue.size());
             } else {
                 System.out.println("✗ Failure: Visitor " + visitor.getName() + " is not eligible to ride " + rideName);
             }
@@ -130,7 +128,6 @@ public class Ride implements RideInterface {
         if (!waitingQueue.isEmpty()) {
             Visitor removedVisitor = waitingQueue.poll();
             System.out.println("✓ Success: Visitor " + removedVisitor.getName() + " removed from waiting queue of " + rideName);
-            System.out.println("  Visitors remaining in queue: " + waitingQueue.size());
         } else {
             System.out.println("✗ Failure: Waiting queue for " + rideName + " is empty, cannot remove visitor");
         }
@@ -160,8 +157,13 @@ public class Ride implements RideInterface {
     @Override
     public void addVisitorToHistory(Visitor visitor) {
         if (visitor != null) {
-            rideHistory.add(visitor);
-            System.out.println("✓ Success: Visitor " + visitor.getName() + " added to ride history of " + rideName);
+            // Check if already in history
+            if (!rideHistory.contains(visitor)) {
+                rideHistory.add(visitor);
+                System.out.println("✓ Success: Visitor " + visitor.getName() + " added to ride history of " + rideName);
+            } else {
+                System.out.println("ℹ Info: Visitor " + visitor.getName() + " is already in ride history");
+            }
         } else {
             System.out.println("✗ Failure: Cannot add null visitor to history");
         }
@@ -192,13 +194,22 @@ public class Ride implements RideInterface {
         if (rideHistory.isEmpty()) {
             System.out.println("Ride history for " + rideName + " is empty");
         } else {
-            System.out.println("Ride history for " + rideName + " (" + rideHistory.size() + " visitors):");
-            // Iterator implementation will be done in Part 4A
+            System.out.println("=== Ride History for " + rideName + " ===");
+            System.out.println("Total visitors in history: " + rideHistory.size());
+            System.out.println("History (in order of riding):");
+            
+            // Part 4A: Use Iterator to traverse (required as per instructions)
+            Iterator<Visitor> iterator = rideHistory.iterator();
             int count = 1;
-            for (Visitor visitor : rideHistory) {
-                System.out.println("  " + count + ". " + visitor.getName() + " (ID: " + visitor.getVisitorId() + ")");
+            while (iterator.hasNext()) {
+                Visitor visitor = iterator.next();
+                System.out.println("  " + count + ". " + visitor.getName() + 
+                                 " (ID: " + visitor.getVisitorId() + 
+                                 ", Age: " + visitor.getAge() + 
+                                 ", Ticket: " + visitor.getTicketType() + ")");
                 count++;
             }
+            System.out.println("=== End of History ===");
         }
     }
 
@@ -208,45 +219,65 @@ public class Ride implements RideInterface {
         System.out.println("runOneCycle method called for " + rideName + " - To be implemented in Part 5");
     }
 
-    // Part 3: New helper methods
-    /**
-     * Get the size of the waiting queue
-     * @return Number of visitors in the queue
-     */
+    // Part 3: Queue helper methods
     public int getQueueSize() {
         return waitingQueue.size();
     }
     
-    /**
-     * View the visitor at the front of the queue (without removing)
-     * @return The visitor at the front of the queue, or null if empty
-     */
     public Visitor peekQueue() {
         return waitingQueue.peek();
     }
     
-    /**
-     * Check if the queue is empty
-     * @return True if queue is empty, false otherwise
-     */
     public boolean isQueueEmpty() {
         return waitingQueue.isEmpty();
     }
     
-    /**
-     * Clear the waiting queue
-     */
     public void clearQueue() {
         waitingQueue.clear();
         System.out.println("Waiting queue for " + rideName + " has been cleared");
+    }
+
+    // Part 4B: Sorting methods
+    /**
+     * Sort ride history using a Comparator
+     * @param comparator Comparator object
+     */
+    public void sortRideHistory(Comparator<Visitor> comparator) {
+        if (rideHistory.size() > 1) {
+            Collections.sort(rideHistory, comparator);
+            System.out.println("✓ Success: Ride history sorted using custom comparator");
+        } else {
+            System.out.println("ℹ Info: Not enough visitors in history to sort");
+        }
+    }
+    
+    /**
+     * Sort history by name (convenience method)
+     */
+    public void sortHistoryByName() {
+        sortRideHistory(new VisitorNameComparator());
+    }
+    
+    /**
+     * Sort history by age (convenience method)
+     */
+    public void sortHistoryByAge() {
+        sortRideHistory(new VisitorAgeComparator());
+    }
+    
+    /**
+     * Sort history by ticket type (convenience method)
+     */
+    public void sortHistoryByTicketType() {
+        sortRideHistory(new VisitorTicketTypeComparator());
     }
 
     @Override
     public String toString() {
         String operatorInfo = (operator != null) ? operator.getName() : "No operator assigned";
         return "Ride{" +
-                "rideName='" + rideName + '\'' +
-                ", rideType='" + rideType + '\'' +
+                "rideName='" + rideName + "'" +
+                ", rideType='" + rideType + "'" +
                 ", minHeight=" + minHeight +
                 ", operator=" + operatorInfo +
                 ", isOperational=" + isOperational() +
